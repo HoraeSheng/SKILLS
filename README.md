@@ -1,10 +1,3 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/skills/README.md b/skills/README.md
-new file mode 100644
-index 0000000000000000000000000000000000000000..d99275a1f75860bd0bf9193e0bff5a14a7c634b0
---- /dev/null
-+++ b/skills/README.md
-@@ -0,0 +1,171 @@
 +# Foreign Trade Skills Pack（外贸电商技能包）
 +
 +本技能包面向跨境与内外贸电商团队，覆盖“从素材到上架”的核心链路：
