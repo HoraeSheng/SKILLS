@@ -11,7 +11,7 @@ Use this file to register source product images before generating display images
 
 | SKU | Product Type | Original Image Path | Must Keep Features | Forbidden Changes | Target Scene |
 |---|---|---|---|---|---|
-| demo-sku-001 | apparel | assets/original-images/demo-sku-001-front.jpg | logo, collar shape, color tone | remove logo, alter fit | studio white background |
+| demo-sku-001 | apparel | skills/ft-detail-image-planner/assets/original-images/demo-sku-001-front.jpg | logo, collar shape, color tone | remove logo, alter fit | studio white background |
 
 ## Prompt Notes
 
