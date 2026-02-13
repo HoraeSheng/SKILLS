@@ -1,0 +1,160 @@
+# 可复制的一键调用模板
+
+> 用法：把下面任意模板整段复制到你的对话里，仅替换方括号内容。
+
+---
+
+## 1) 看图生成文案（`ft-product-copy-from-image`）
+
+```text
+请使用 skill: ft-product-copy-from-image。
+
+输入：
+- 商品图片：[在此上传或粘贴图片路径]
+- 卖家备注：[如：涤纶面料，现货黑/灰两色]
+- 目标平台：[Amazon / 淘宝 / 1688 / 全部]
+- 语言：[中文 / 英文 / 中英双语]
+
+要求：
+1) 先输出 Visual Fact Sheet，严格分成 Confirmed / Probable / Unknown。
+2) 生成 SEO 标题（关键词优先）。
+3) 生成 5 条卖点（特性 -> 好处 -> 场景）。
+4) 生成短描述 + 长描述。
+5) 最后给出 Missing Data Request to Supplier 和 Claim Safety Notes。
+
+请按 skill 模板结构输出，Unknown 不要臆造。
+```
+
+---
+
+## 2) 参数整理成规格表（`ft-spec-material-table`）
+
+```text
+请使用 skill: ft-spec-material-table。
+
+输入资料：
+- 聊天记录/工厂单/图片OCR：[粘贴内容]
+- 目标渠道：[Amazon / 淘宝 / 1688]
+
+要求：
+1) 先标准化字段，再映射到标准规格 Schema。
+2) 每个字段标记：Provided / Estimated / Missing。
+3) 输出四部分：
+   - Buyer Spec Table
+   - Material Composition Table
+   - Internal QC Table（含 source 与 risk）
+   - Supplier Confirmation Questions（优先高风险缺失项）
+4) 使用公制；如果目标为美国站，同步给英制括号值。
+
+请勿编造认证信息。
+```
+
+---
+
+## 3) 详情图分镜策划（`ft-detail-image-planner`）
+
+```text
+请使用 skill: ft-detail-image-planner。
+
+输入：
+- 商品类型：[apparel / object / electronics / ...]
+- 核心卖点：[3-5条]
+- 目标平台：[Amazon / 淘宝 / 1688]
+- 素材条件：[是否有模特、场景、白底图]
+
+要求：
+1) 输出 8 张详情图分镜（每张都含 Goal / Required elements / Text overlay）。
+2) 必须包含：
+   - 若是服装：模特上身 + 面料特写 + 尺码引导
+   - 若是非服装：比例尺参考 + 关键细节特写 + 使用场景
+3) 追加平台适配说明（Amazon 简洁，淘宝/1688 注释更丰富）。
+4) 追加 Retouch checklist 和 A/B 测试假设。
+```
+
+---
+
+## 4) 多平台本地化改写（`ft-marketplace-listing-localization`）
+
+```text
+请使用 skill: ft-marketplace-listing-localization。
+
+先冻结以下事实底稿（不可改事实）：
+[在此粘贴统一参数、卖点、MOQ、交期、打样、定制能力]
+
+要求：
+1) 基于同一事实输出 Amazon / 淘宝 / 1688 三版文案。
+2) Amazon 偏信息清晰和搜索；淘宝偏种草叙事；1688偏批发交易条款。
+3) 输出 Consistency Diff Check：
+   - No-conflict fields
+   - Needs review
+
+注意：允许表达差异，不允许事实冲突。
+```
+
+---
+
+## 5) 发布前合规与SEO体检（`ft-listing-compliance-seo`）
+
+```text
+请使用 skill: ft-listing-compliance-seo。
+
+输入：
+- 标题：[...]
+- 卖点：[...]
+- 详情文案：[...]
+- 图片叠字：[...]
+- 主关键词：[...]
+- 属性关键词（材质/场景/人群）：[...]
+
+要求：
+1) 标注每条声明：Safe / Needs evidence / High-risk。
+2) 给出低偏差改写建议（不引入新事实）。
+3) 输出关键词覆盖报告：主关键词、属性关键词、堆砌风险。
+4) 给出最终发布前 checklist。
+```
+
+---
+
+## 6) 一条龙模板（从素材到发布）
+
+```text
+请按以下顺序执行并分章节输出：
+1) ft-product-copy-from-image
+2) ft-spec-material-table
+3) ft-detail-image-planner
+4) ft-marketplace-listing-localization
+5) ft-listing-compliance-seo
+
+输入素材：
+- 商品图片：[...]
+- 原始参数：[...]
+- 渠道目标：[Amazon/淘宝/1688]
+- 关键词：[...]
+
+全局约束：
+- 严格区分“可见事实”和“推断信息”。
+- 不写无证据认证、绝对化承诺、医疗功效暗示。
+- 所有版本保持事实一致。
+```
+
+---
+
+## 7)（可选）图片生成脚本命令模板（Nano Banana）
+
+> 适用于 `ft-detail-image-planner/scripts/generate_nano_banana_images.py`
+
+```bash
+# 先校验payload（不调用API）
+python skills/ft-detail-image-planner/scripts/generate_nano_banana_images.py \
+  --reference skills/ft-detail-image-planner/references/product-original-images.md \
+  --prompt "Create an ecommerce lifestyle hero image with accurate product details" \
+  --output-dir skills/ft-detail-image-planner/outputs \
+  --dry-run
+
+# 正式调用前设置API Key
+export OPENAI_API_KEY="你的key"
+python skills/ft-detail-image-planner/scripts/generate_nano_banana_images.py \
+  --reference skills/ft-detail-image-planner/references/product-original-images.md \
+  --prompt "Create an ecommerce lifestyle hero image with accurate product details" \
+  --output-dir skills/ft-detail-image-planner/outputs
+```
